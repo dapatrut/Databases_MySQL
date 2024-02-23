@@ -1,81 +1,155 @@
-CREATE DATABASE  IF NOT EXISTS `computerstore` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `computerstore`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: computerstore
--- ------------------------------------------------------
--- Server version	8.0.35
+-- Create a database named ‘computerstore'
+create database computerstore; 
+use computerstore;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- Create the tables 
+create table Manufactures(
+Code int auto_increment primary key NOT NULL,
+Name VARCHAR(50) NOT NULL
+);
+alter table Manufactures rename to Manufacturers;
+select * from Manufacturers;
 
---
--- Table structure for table `manufacturers`
---
+create table Products(
+Code int auto_increment primary key NOT NULL,
+Name VARCHAR(50) NOT NULL,
+Price float NOT NULL,
+Manufacturer int  NOT NULL,
+constraint fk_Manufacturers foreign key (Manufacturer) references Manufacturers(Code)
+);
+select * from Products;
 
-DROP TABLE IF EXISTS `manufacturers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `manufacturers` (
-  `Code` int NOT NULL AUTO_INCREMENT,
-  `Name` varchar(50) NOT NULL,
-  PRIMARY KEY (`Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Insert the data into the tables
+insert into Manufacturers (Code, Name)
+values ('1','Sony'), ('2', 'Asus'), ('3', 'Hewlett-Packard'), ('4', 'Lenovo'), ('5', 'Fujitsu'), ('6', 'SanDisk');
 
---
--- Dumping data for table `manufacturers`
---
+insert into Products (Code, Name, Price, Manufacturer)
+values
+('1', 'Hard Drive', '64.89', '5'),
+('2', 'Memory Card', '17.99', '6'),
+('3', 'Laptop charger', '42.29', '4'),
+('4', 'USB Flash drive', '10', '6'),
+('5', 'Monitor', '219.99', '1');
 
-LOCK TABLES `manufacturers` WRITE;
-/*!40000 ALTER TABLE `manufacturers` DISABLE KEYS */;
-INSERT INTO `manufacturers` VALUES (1,'Sony'),(2,'Asus'),(3,'Hewlett-Packard'),(4,'Lenovo'),(5,'Fujitsu'),(6,'SanDisk');
-/*!40000 ALTER TABLE `manufacturers` ENABLE KEYS */;
-UNLOCK TABLES;
+insert into Products (Code, Name, Price, Manufacturer)
+values
+('6', 'HDMI cable', '18.29', '2'),
+('7', 'Gaming laptop', '2079.59', '2'),
+('8', 'Printer','96.32', '3'),
+('9', 'Toner cartridge', '59', '3'),
+('10', 'Computer case','158.92', '2');
+select * from Products;
 
---
--- Table structure for table `products`
---
+-- Check that all the records were inserted in the Manufacturers table
+select * from Manufacturers;
 
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `Code` int NOT NULL AUTO_INCREMENT,
-  `Name` varchar(50) NOT NULL,
-  `Price` float NOT NULL,
-  `Manufacturer` int NOT NULL,
-  PRIMARY KEY (`Code`),
-  KEY `fk_Manufacturers` (`Manufacturer`),
-  CONSTRAINT `fk_Manufacturers` FOREIGN KEY (`Manufacturer`) REFERENCES `manufacturers` (`Code`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Select the names of all the products in the store. 
+select name from Products;
 
---
--- Dumping data for table `products`
---
+-- Select the names and the prices of all the products in the store. 
+select name, price from Products;
 
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Hard Drive',64.89,5),(2,'Memory Card',17.99,6),(3,'Laptop charger',42.29,4),(4,'USB Flash drive',10,6),(5,'Monitor',219.99,1),(6,'HDMI cable',18.29,2),(7,'Gaming laptop',2079.59,2),(8,'Printer',96.32,3),(9,'Toner cartridge',59,3),(10,'Computer case',158.92,2);
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- Select the name of the products with a price less than or equal to $200 
+select name from Products where price <= 200;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+-- Select all the products with a price between $60 and $120 
+select * from Products where price between 60 and 120;
 
--- Dump completed on 2024-02-23 20:09:33
+-- Select the name and price in cents (i.e., the price must be multiplied by 100). 
+select name, price * 100 from Products;
+
+-- Compute the average price of all the products 
+select avg(price) from Products;
+
+-- Compute the average price of all products where the manufacturer is Asus 
+desc Manufacturers;
+select avg(price) from Products where Manufacturer=(select Code from Manufacturers where
+name = 'Asus');
+-- se mai poate rezolva si cu inner join, aduceam din ambele tab si puneam conditie
+select avg(price) from products
+inner join manufacturers on manufacturers.Code=products.Manufacturer where
+manufacturers.name='Asus';
+
+-- Compute the average price of all products with manufacturer code equal to 2.
+select avg(Price) from Products where Manufacturer=2;
+
+-- Compute the number of products with a price larger than or equal to $180
+select count(*) from Products where price >= 180; 
+--  count(*), merge si cu count(code)
+
+/*  Select the name and price of all products with a price larger than or equal to $180, and
+sort first by price (in descending order), and then by name (in ascending order) */
+select name, price from Products where price >= 180 order by price desc, name asc;
+
+-- Select all the data from the products, including all the data for each product's manufacturer 
+select * from Products left join Manufacturers on Products.Manufacturer = Manufacturers.Code;
+
+-- Select the product name, price, and manufacturer name of all the products 
+select Products.Name, Products.Price, Manufacturers.Name from Products left join Manufacturers on Products.Manufacturer = Manufacturers.Code;   
+-- price se poate pune si fara numele tab, nu il avem in ambele tab
+-- pot sa folosesc si inner join
+
+-- Select the average price of each manufacturer's products, showing only the manufacturer's code 
+select avg(price), Manufacturer from Products group by Manufacturer;
+
+-- Select the average price of each manufacturer's products, showing the manufacturer's name
+SELECT AVG(Price), Manufacturers.Name
+FROM Products INNER JOIN Manufacturers
+ON Products.Manufacturer = Manufacturers.Code
+GROUP BY Manufacturers.Name;
+
+-- Select the name and price of the cheapest product using MIN with a nested select.
+SELECT Name, Price
+FROM Products
+WHERE Price = (SELECT MIN(Price) FROM Products);
+
+-- ordering and limiting to 1 
+SELECT Name, Price
+FROM Products
+ORDER BY Price ASC
+LIMIT 1;
+
+-- Add a new product: Loudspeakers, $70, manufacturer 2.
+INSERT INTO Products (Code, Name, Price, Manufacturer)
+VALUES (11, 'Loudspeakers', 70, 2);
+SELECT * FROM Products WHERE Code = 11;
+
+-- Update the name of product 8 to "Laser Printer".
+SELECT * FROM Products WHERE Code = 8;
+UPDATE Products 
+SET Name = 'Laser printer'
+WHERE Code = 8;
+
+-- Apply a 10% discount to all products.
+UPDATE Products
+SET Price = Price - (Price * 0.1);
+
+-- Apply a 15% discount to all products with a price larger than or equal to $120.
+Select price-(0.15*price) discount15, code, name, manufacturer, price from products
+where price>=120 ;
+
+-- Select the product with the smallest price where the manufacturer is Sony.
+SELECT MIN(Price)
+FROM Products
+WHERE Manufacturer = (SELECT Code FROM Manufacturers WHERE Name = 'Asus' );
+
+SELECT MIN(Price)
+FROM Products INNER JOIN Manufacturers
+ON Manufacturers.Code = Products.Manufacturer
+WHERE Manufacturers.Name = 'Asus';
+
+--  Select all products where manufacturers are Sony, Asus and Lenovo.
+SELECT * FROM Products
+WHERE Manufacturer IN (SELECT Code FROM manufacturers WHERE Name IN ('Sony', 'Lenovo', 'Asus'));
+SELECT Code FROM manufacturers WHERE Name IN ('Sony', 'Lenovo', 'Asus');
+
+SELECT * FROM Products
+WHERE Price IN (63, 16.461);
+
+SELECT * FROM Products;
+
+SELECT * FROM Products
+WHERE Name IN ('Laser printer', 'Gaming Laptop', 'Monitor');
+
+SELECT * FROM Products
+WHERE Name = 'Laser Printer' OR Name = 'Gaming Laptop' OR Name = 'Monitor';
