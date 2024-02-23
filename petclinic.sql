@@ -1,85 +1,179 @@
-CREATE DATABASE  IF NOT EXISTS `petclinic` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `petclinic`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: petclinic
--- ------------------------------------------------------
--- Server version	8.0.35
+/* DDL - it helps us define the types of data we add to the database
+   DML - helps us to manage the entered data: insertion, editing, deletion
+   DQL - it helps us to extract data from the database */
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+create database petclinic;
+-- drop database petclinic -- stergere database; 
 
---
--- Table structure for table `owners`
---
+show databases;
+select * from information_schema.tables;
+select * from information_schema.views;
+use petclinic;
 
-DROP TABLE IF EXISTS `owners`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `owners` (
-  `ownerId` int NOT NULL AUTO_INCREMENT,
-  `firstName` char(25) NOT NULL,
-  `lastName` varchar(25) DEFAULT NULL,
-  `dateOfBirth` date DEFAULT NULL,
-  `age` varchar(25) DEFAULT NULL,
-  `city` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`ownerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Crearea unei tabele
+CREATE TABLE owners (
+    firstName VARCHAR(25) NOT NULL,
+    lastName VARCHAR(25) NOT NULL
+);
 
---
--- Dumping data for table `owners`
---
+-- Adaugarea unei coloane intr-o tabela
+alter table owners add column age int;
 
-LOCK TABLES `owners` WRITE;
-/*!40000 ALTER TABLE `owners` DISABLE KEYS */;
-INSERT INTO `owners` VALUES (1,'Jim','Jameson','1980-01-31','28','Timisoara'),(2,'Andrew','Smith','1957-05-20','45','Cluj'),(3,'Tom','Anderson','1981-06-28','30','Cluj'),(4,'Jack','Smith','1983-02-18','41','Bucuresti'),(5,'Robert','Deep','1993-06-10','25',NULL),(6,'Thomas','Cruise','1984-05-25','39',NULL),(7,'Winston','Churchill','1898-05-06','47',NULL),(8,'Anton','Pann','1823-04-17','95',NULL),(9,'Anton','Pann','1823-04-17','95',NULL);
-/*!40000 ALTER TABLE `owners` ENABLE KEYS */;
-UNLOCK TABLES;
+-- Stergerea unei coloane din tabela - doua instructiuni echivalente 
+alter table owners drop column age;
+alter table owners drop age;
 
---
--- Table structure for table `pets`
---
+-- Modify - poate sa modifice proprietatile unei coloane 
+desc owners; -- arata structura tabelei
+alter table owners modify firstName char(25) not null;
+alter table owners modify lastName char(25) not null;
 
-DROP TABLE IF EXISTS `pets`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pets` (
-  `petid` int NOT NULL AUTO_INCREMENT,
-  `race` varchar(45) NOT NULL,
-  `dateOfBirth` date NOT NULL,
-  `ownerId` int NOT NULL,
-  PRIMARY KEY (`petid`),
-  KEY `fk_pets_owners` (`ownerId`),
-  CONSTRAINT `fk_pets_owners` FOREIGN KEY (`ownerId`) REFERENCES `owners` (`ownerId`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- Instructiunea CHANGE – schimba numele unei coloane
+alter table owners change lastName ownerLastName char(25) not null;
 
---
--- Dumping data for table `pets`
---
+-- Instructiunea RENAME - schimba numele tabelei
+alter table owners rename to petOwner;
 
-LOCK TABLES `pets` WRITE;
-/*!40000 ALTER TABLE `pets` DISABLE KEYS */;
-INSERT INTO `pets` VALUES (2,'european','2020-02-15',8),(7,'spitz','2021-12-07',6);
-/*!40000 ALTER TABLE `pets` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+/* Instructiunea de DROP TABLE sterge tabela impreuna cu toate informatiile */
+-- drop table petOwner;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+desc petOwner;
+rename table petOwner to owners;
+alter table owners change ownerLastName lastName varchar(25);
 
--- Dump completed on 2024-02-23 20:04:58
+alter table owners add column dateOfBirth date;
+
+-- Instructiunea INSERT - adaugam info noi in tab    
+insert into owners (firstName, lastName, dateOfBirth)
+values 
+('Jim', 'Jameson', '1980-01-31'),
+('Andrew', 'Smith', '1957-05-20'),
+('Tom', 'Anderson', '1981-06-28');
+select * from owners;        -- verificam rezultatele instructiunii de insert
+
+-- update owners set firstName = 'James';
+-- delete from owners;
+-- truncate table owners;
+
+-- Instructiunea SELECT - extragem info din BD in fct de anumite criterii
+select firstName, lastName from owners; 
+select firstName, dateOfBirth from owners; 
+
+alter table owners
+add column ageOwners VARCHAR(20) NOT NULL AFTER dateOfBirth;
+select * from owners;
+
+INSERT INTO owners(column4) 
+VALUES ('30'), ('28'), ('39');
+
+alter table owners drop column age;
+alter table owners change ageOwners age varchar(25);
+
+insert into owners (firstName, lastName, dateOfBirth, age)
+values 
+('Jack', 'Smith', '1983-02-18', 41);
+insert into owners (firstName, lastName, dateOfBirth, age)
+values 
+('Robert', 'Deep', '1993-06-10', '25');
+insert into owners (firstName, lastName, dateOfBirth, age)
+values 
+('Thomas', 'Cruise', '1984-05-25', '39');
+
+-- Instructiunea WHERE - instructiune de filtrare 
+select * from owners where dateOfBirth > '1970-12-31';
+select * from owners where age > 29;
+select * from owners where age < 41;
+select * from owners where age = 41;
+select * from owners where age >= 41;
+select * from owners where age <= 41;
+
+alter table owners add column city varchar(50);
+update owners set city = 'Cluj' where firstName = 'Tom';
+update owners set city = 'Cluj' where firstName = 'Andrew';
+update owners set city = 'Bucuresti' where firstName = 'Jack';
+update owners set city = 'Timisoara' where firstName = 'Jim';
+update owners set age = '28' where firstName = 'Jim';
+update owners set age = '45' where firstName = 'Andrew';
+select * from owners;
+
+select * from owners where firstName in ('Jim', 'Tom');    -- filtrare simpla, cu in
+select * from owners where firstName not in ('Jim', 'Tom');
+select * from owners where city is not null;
+select * from owners where age != 41;                   -- != sau <>, exclude rezultatele
+select * from owners where lastName != "Deep";
+select * from owners where lastName <> "Deep";
+select * from owners where age between 39 and 50;
+select * from owners where firstName like 'T%';         -- filtrare pe baza operatorului LIKE
+select * from owners where firstName like '%om';
+select * from owners where firstName like '%d%';
+select * from owners where dateOfBirth like '1984%';    -- ii returneaza pe cei nascuti in anii 80`
+select * from owners where dateOfBirth like '19%';
+select * from owners where dateOfBirth like '%06%';
+select * from owners where dateOfBirth like '%-06-%';   -- ii returneaza pe cei nascuti in luna 6-a
+
+-- Filtrare cu operator AND si OR
+select * from owners where firstName like '%om' and dateOfBirth like '198%'; 
+select * from owners where firstName like '%om' or dateOfBirth like '198%'; 
+select * from owners where (firstName like '%om' or dateOfBirth like '198%') and city = "Cluj";
+select * from owners where firstName like '%om' or dateOfBirth like '198%' and city = "Cluj"; 
+
+-- Instructiune cu functii agregate
+select avg(age) from owners;
+select sum(age) from owners;
+select min(age) from owners;
+select max(age) from owners;
+select count(city) from owners;
+select count(*) from owners;
+
+-- Instructiune care contine clauza GROUP BY
+select firstName, lastName, min(age) from owners
+group by firstName, lastName;
+select * from owners;
+
+insert into owners (firstName, lastName, dateOfBirth, age)
+values ('Winston', 'Churchill', '1898-06-06', 47);
+update owners set dateOfBirth = "1898-05-06" where firstName = "Winston";
+
+-- Creare cheie primara
+alter table owners add column ownerId int primary key auto_increment;
+alter table owners modify column ownerId int auto_increment first;
+desc owners;
+
+insert into owners (firstName, lastName, dateOfBirth, age)
+values ('Anton', 'Pann', '1823-04-17', '95');
+insert into owners (firstName, lastName, dateOfBirth, age)
+values ('Anton', 'Pann', '1823-04-17', '95');
+
+create table pets (
+petid int not null auto_increment,
+race varchar(45) not null,
+dateOfBirth date not null,
+ownerId int not null,
+primary key (petid),
+constraint fk_pets_owners foreign key (ownerid) references owners(ownerid)  -- cheie secundara
+);
+
+insert into pets (race, dateOfBirth, ownerId)
+value ('european', '2020-02-15', 8);
+insert into pets (race, dateOfBirth, ownerId)
+value ('spitz', '2021-12-07', 6);
+
+delete from owners where ownerId = 10;
+delete from pets where ownerid = 10;
+
+select * from owners;
+select * from pets;
+
+-- Tabels joins
+select * from owners cross join pets;
+select * from owners cross join pets on owners.ownerid = pets.ownerId;
+select * from owners inner join pets on owners.ownerid = pets.ownerId;
+select * from owners left join pets on owners.ownerid = pets.ownerId;
+select * from owners left join pets on owners.ownerid = pets.ownerId where pets.ownerId is not null;
+select * from owners right join pets on owners.ownerid = pets.ownerId;
+select * from owners right join pets on owners.ownerid = pets.ownerId where pets.ownerId is null;
+select * from owners right join pets on owners.ownerid = pets.ownerId where pets.ownerId is not null;
+
+
+
+
