@@ -1,147 +1,117 @@
-CREATE DATABASE  IF NOT EXISTS `ikea` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `ikea`;
--- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
---
--- Host: 127.0.0.1    Database: ikea
--- ------------------------------------------------------
--- Server version	8.0.35
+create database ikea;
+use ikea;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE TABLE Users(
+user_id int auto_increment primary key,
+username VARCHAR(50) NOT NULL,
+email VARCHAR(100) NOT NULL,
+password VARCHAR(255) NOT NULL,
+registration_date timestamp default current_timestamp
+);
+select * from Users;
+alter table Users rename to users;
 
---
--- Table structure for table `product_reviews`
---
+CREATE TABLE products(
+product_id int auto_increment primary key,
+user_id int NOT NULL,
+name VARCHAR(100) NOT NULL,
+description text,
+price float NOT NULL,
+foreign key(user_id) references users(user_id)
+);
+select * from products;
 
-DROP TABLE IF EXISTS `product_reviews`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `product_reviews` (
-  `review_id` int NOT NULL AUTO_INCREMENT,
-  `product_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `rating` int NOT NULL,
-  `review` text,
-  `review_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`review_id`),
-  KEY `user_id` (`user_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `product_reviews_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `product_reviews_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE user_wishlist(
+wishlist_id int auto_increment primary key,
+user_id int NOT NULL,
+product_id int NOT NULL,
+foreign key(user_id) references users(user_id),
+foreign key(product_id) references products(product_id)
+);
+select * from user_wishlist;
 
---
--- Dumping data for table `product_reviews`
---
+CREATE TABLE user_reviews(
+review_id int auto_increment primary key,
+product_id int NOT NULL,
+user_id int NOT NULL,
+rating int NOT NULL,
+review text,
+review_date timestamp default current_timestamp,
+foreign key(user_id) references users(user_id),
+foreign key(product_id) references products(product_id)
+);
 
-LOCK TABLES `product_reviews` WRITE;
-/*!40000 ALTER TABLE `product_reviews` DISABLE KEYS */;
-INSERT INTO `product_reviews` VALUES (1,1,2,3,'Average product, could be better','2024-02-04 15:27:08'),(2,1,3,5,'Excellent','2024-02-04 15:27:08'),(3,2,2,5,'Exceeded my expectations','2024-02-04 15:27:08');
-/*!40000 ALTER TABLE `product_reviews` ENABLE KEYS */;
-UNLOCK TABLES;
+alter table user_reviews rename to product_reviews;
+select * from product_reviews;
 
---
--- Table structure for table `products`
---
+insert into users(username, email, password)
+values
+('Robert', 'robert@yahoo.com', 'pass123'),
+('John', 'john@yahoo.com', 'pass456'),
+('Anna', 'anna@yahoo.com', 'pass2024'),
+('George', 'george@yahoo.com', 'pass0000'),
+('Carina', 'carina@yahoo.com', 'pass100'),
+('Thomas', 'thomas@yahoo.com', 'pass78910'),
+('David', 'david@gmail.com', 'pass203040');
+select * from users;
 
-DROP TABLE IF EXISTS `products`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `products` (
-  `product_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `name` varchar(100) NOT NULL,
-  `description` text,
-  `price` float NOT NULL,
-  `manufacturer` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`product_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+insert into products(name, description, price)
+values
+('BRIMNES wardrobe', 'Small spaces need smart storage', '199'),
+('PÄRUP sofa', 'Sleek design, quick assembly and easy-care with a removable and washable cover', '750'),
+('EKENÄSET sofa', 'A slender and robust sofa inspired by 1950s Scandinavian design', '299'),
+('HEMNES bookcase', 'Sustainable beauty from sustainably-sourced solid pine, a natural and renewable material', '199'),
+('INGATORP table and 4 chairs', '4-seat dining set with a traditional look', '589'),
+('KALLAX shelving unit', 'The KALLAX series adapts to taste, space, needs and budget', '50');
+select * from products;
 
---
--- Dumping data for table `products`
---
+insert into product_reviews(product_id, user_id, rating, review)
+values
+('1', '2', '3', 'Average product, could be better'),
+('1', '3', '5', 'Excellent'),
+('2', '2', '5', 'Exceeded my expectations');
+select * from product_reviews;
 
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,NULL,'BRIMNES wardrobe','Small spaces need smart storage',199,NULL),(2,NULL,'PÄRUP sofa','Sleek design, quick assembly and easy-care with a removable and washable cover',750,NULL),(3,NULL,'EKENÄSET sofa','A slender and robust sofa inspired by 1950s Scandinavian design',299,NULL),(4,NULL,'HEMNES bookcase','Sustainable beauty from sustainably-sourced solid pine, a natural and renewable material',199,NULL),(5,NULL,'INGATORP table and 4 chairs','4-seat dining set with a traditional look',589,NULL),(6,NULL,'KALLAX shelving unit','The KALLAX series adapts to taste, space, needs and budget',50,NULL);
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
+insert into user_wishlist(user_id, product_id)
+values
+('4','4'),
+('4','3'),
+('4','2'),
+('1','4'),
+('1','4');
+select * from user_wishlist;
 
---
--- Table structure for table `user_wishlist`
---
+select * from users where username = 'Carina';
+select name, price from products;
 
-DROP TABLE IF EXISTS `user_wishlist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_wishlist` (
-  `wishlist_id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `product_id` int NOT NULL,
-  PRIMARY KEY (`wishlist_id`),
-  KEY `user_id` (`user_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `user_wishlist_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `user_wishlist_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+alter table products add manufacturer VARCHAR(50);
+select * from products;
 
---
--- Dumping data for table `user_wishlist`
---
+update  users set username = upper(username);
+select username as 'USER' from users;
 
-LOCK TABLES `user_wishlist` WRITE;
-/*!40000 ALTER TABLE `user_wishlist` DISABLE KEYS */;
-INSERT INTO `user_wishlist` VALUES (1,4,4),(2,4,3),(3,4,2);
-/*!40000 ALTER TABLE `user_wishlist` ENABLE KEYS */;
-UNLOCK TABLES;
+select * from product_reviews order by review desc;
 
---
--- Table structure for table `users`
---
+delete from user_wishlist where user_id = 1;
 
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `users` (
-  `user_id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `registration_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+select * from user_wishlist where product_id between 1 and 4;
 
---
--- Dumping data for table `users`
---
+-- Filtering with OR and AND operators
+select * from users where username = 'Robert' and email = 'robert@yahoo.com';
+select * from users where username = 'Robert' or username = 'Carina';
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'ROBERT','robert@yahoo.com','pass123','2024-02-04 14:55:01'),(2,'JOHN','john@yahoo.com','pass456','2024-02-04 14:55:01'),(3,'ANNA','anna@yahoo.com','pass2024','2024-02-04 14:55:01'),(4,'GEORGE','george@yahoo.com','pass0000','2024-02-04 14:55:01'),(5,'CARINA','carina@yahoo.com','pass100','2024-02-04 14:55:01'),(6,'THOMAS','thomas@yahoo.com','pass78910','2024-02-04 14:55:01'),(7,'DAVID','david@gmail.com','pass203040','2024-02-04 14:55:01');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- Filtering based on the LIKE operator
+select * from users where username like '%na';
+select * from users where username like '%n%';
+select * from users where username like 'd%';
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+-- Instruction with aggregate functions
+select count(*) from products;
+select min(price) from products;
+select sum(price) from products;
+select sum(rating) from product_reviews;
+select Avg(price) from products;
 
--- Dump completed on 2024-02-23 20:07:49
+-- Tabels joins
+select * from users left join product_reviews on users.user_id=product_reviews.review_id;
+select *from users inner join user_wishlist on users.user_id=user_wishlist.wishlist_id;
