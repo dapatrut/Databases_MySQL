@@ -8,7 +8,7 @@ Application: [IKEA](https://www.ikea.com/gb/en/).
 
 Performed different queries inside the sql files: 
 
-- I've specified in a comment above each group of instructions what each one is;
+- I specified the type of instructions through a comment;
 
 - I have created a link between the tables using primary and foreign keys;
 
