@@ -87,7 +87,7 @@ select * from Products left join Manufacturers on Products.Manufacturer = Manufa
 -- Select the product name, price, and manufacturer name of all the products 
 select Products.Name, Products.Price, Manufacturers.Name from Products left join Manufacturers on Products.Manufacturer = Manufacturers.Code;   
 -- price se poate pune si fara numele tab, nu il avem in ambele tab
--- pot sa folosesc si inner join
+-- se poate folosi si inner join
 
 -- Select the average price of each manufacturer's products, showing only the manufacturer's code 
 select avg(price), Manufacturer from Products group by Manufacturer;
@@ -103,7 +103,7 @@ SELECT Name, Price
 FROM Products
 WHERE Price = (SELECT MIN(Price) FROM Products);
 
--- ordering and limiting to 1 
+-- Ordering and limiting to 1 
 SELECT Name, Price
 FROM Products
 ORDER BY Price ASC
@@ -126,12 +126,12 @@ SET Price = Price - (Price * 0.1);
 
 -- Apply a 15% discount to all products with a price larger than or equal to $120.
 Select price-(0.15*price) discount15, code, name, manufacturer, price from products
-where price>=120 ;
+where price >= 120;
 
 -- Select the product with the smallest price where the manufacturer is Sony.
 SELECT MIN(Price)
 FROM Products
-WHERE Manufacturer = (SELECT Code FROM Manufacturers WHERE Name = 'Asus' );
+WHERE Manufacturer = (SELECT Code FROM Manufacturers WHERE Name = 'Asus');
 
 SELECT MIN(Price)
 FROM Products INNER JOIN Manufacturers
