@@ -24,4 +24,4 @@ Performed different queries inside the sql files:
 
 - I used Joins in queries.
 
-I used MySQL Workbench.
+Tool used: MySQL Workbench.
