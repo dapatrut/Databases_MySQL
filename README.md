@@ -23,3 +23,5 @@ Performed different queries inside the sql files:
 - I added statements containing aggregate functions and the GROUP BY clause;
 
 - I used Joins in queries.
+
+I used MySQL Workbench.
