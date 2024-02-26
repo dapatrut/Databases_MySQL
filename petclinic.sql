@@ -106,7 +106,7 @@ select * from owners where age between 39 and 50;
 select * from owners where firstName like 'T%';         -- filtrare pe baza operatorului LIKE
 select * from owners where firstName like '%om';
 select * from owners where firstName like '%d%';
-select * from owners where dateOfBirth like '1984%';    -- ii returneaza pe cei nascuti in anii 80`
+select * from owners where dateOfBirth like '198%';    -- ii returneaza pe cei nascuti in anii 80`
 select * from owners where dateOfBirth like '19%';
 select * from owners where dateOfBirth like '%06%';
 select * from owners where dateOfBirth like '%-06-%';   -- ii returneaza pe cei nascuti in luna 6-a
